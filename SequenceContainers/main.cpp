@@ -2,13 +2,18 @@
 
 #include <iostream> 
 #include <array>
+#include <vector>
 using std::cin;
 using std::cout;
 using std::endl;
 
 #define tab		"\t"
+#define delimiter		"\n-------------------------------------------------------\n"
 
-#define STL_ARRAY
+template<typename T> void vector_info(const std::vector<T>& vec);
+
+//#define STL_ARRAY
+#define STL_VECTOR
 
 unsigned long long Factorial(int number)
 {
@@ -76,6 +81,51 @@ void main()
 	}
 	cout << endl;
 	std::string str;
+
 #endif // STL_ARRAY
 
+#ifdef STL_VECTOR
+
+	std::vector<int> vec = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34 };
+	for (int i = 0; i < vec.size(); i++)
+	{
+		cout << vec[i] << tab;
+	}
+	cout << endl;
+	vector_info(vec);
+	vec.push_back(55);
+	for (std::vector<int>::iterator it = vec.begin(); it != vec.end(); ++it)
+		cout << *it << tab;
+	cout << endl;
+	for (std::vector<int>::reverse_iterator it = vec.rbegin(); it != vec.rend(); ++it)
+		cout << *it << tab;
+	cout << endl;
+	vector_info(vec);
+	//vec.shrink_to_fit();
+	//vec.reserve(16);
+	//vec.resize(18);
+	for (int i : vec) cout << i << tab;
+	cout << endl;
+	vector_info(vec);
+	cout << vec.front() << endl;
+	cout << vec.back() << endl;
+	cout << vec.data() << endl;
+	cout << delimiter << endl;
+	int index;
+	int value;
+	cout << "Введите индекс доб. элемента: "; cin >> index;
+	cout << "Введите значение доб. элемента: "; cin >> value;
+	vec.insert(vec.begin() + index, value);
+	for (int i : vec) cout << i << tab;
+	cout << endl;
+#endif // STL_VECTOR
+
+}
+
+template<typename T> void vector_info(const std::vector<T>& vec)
+{
+	cout << "Size:\t" << vec.size() << endl;
+	cout << "MaxSize:\t" << vec.max_size() << endl;
+	cout << "Capacity:\t" << vec.capacity() << endl;
+	cout << delimiter << endl;
 }
