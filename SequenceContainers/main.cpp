@@ -14,16 +14,16 @@ unsigned long long Factorial(int number)
 {
 	if (number < 0)
 	{
+		//ВОЗЬМЕМ СТАНДАРТНЫЕ ТИПЫ ИСКЛЮЧЕНИЙ
 		throw std::invalid_argument("The number cannot be negative!");
 	}
 	if (number == 0 || number == 1) return 1;
 	unsigned long long result = 1;
-	for (int i = 2; i <= number; ++i) {
-		if (result == 0)
-		{
-			throw std::runtime_error("An arithmetic overflow has occurred");
-		}
-		result *= i;
+	result = number * Factorial(number - 1);
+	if (result > ULLONG_MAX / number)
+	{	// ДЛЯ ULLONG_MAX ФАКТОРИАЛ КОРРЕКТНО ОТОБРАЖАЕТСЯ ДО 20
+		// ПРАВИЛЬНЫЙ ТИП ИСКЛЮЧЕНИЯ ДЛЯ ВЫБРОСА — STD::OVERFLOW_ERROR
+		throw std::overflow_error("An arithmetic overflow has occurred");
 	}
 	return result;
 }
