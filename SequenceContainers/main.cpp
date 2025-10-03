@@ -3,6 +3,7 @@
 #include <iostream> 
 #include <array>
 #include <vector>
+#include <list>
 using std::cin;
 using std::cout;
 using std::endl;
@@ -11,9 +12,29 @@ using std::endl;
 #define delimiter		"\n-------------------------------------------------------\n"
 
 template<typename T> void vector_info(const std::vector<T>& vec);
+template<typename T> void list_print(const std::list<T>& list);
+template<typename T> void insert(T& value, int index, std::list<T>& list);
+template<typename T> void erase(int index, std::list<T>& list);
+
+template<typename T> class TList : public std::list<T>
+{
+	void list_print(const std::list<T>& list)
+	{
+		for(typename std::list<T>::const_iterator it = list.cbegin(); it != list.cend(); ++it)
+			cout << *it << tab;
+		cout << endl;
+	}
+public:
+	void list_print()
+	{
+		list_print(const std::list<T>&list);
+	}
+};
 
 //#define STL_ARRAY
-#define STL_VECTOR
+//#define STL_VECTOR
+//#define STL_LIST
+#define STL_LIST_CLASS
 
 unsigned long long Factorial(int number)
 {
@@ -86,7 +107,7 @@ void main()
 
 #ifdef STL_VECTOR
 
-	std::vector<int> vec = {0, 1, 1, 2, 3, 5, 8, 13, 21, 34 };
+	std::vector<int> vec = { 0, 1, 1, 2, 3, 5, 8, 13, 21, 34 };
 	for (int i = 0; i < vec.size(); i++)
 	{
 		cout << vec[i] << tab;
@@ -111,15 +132,166 @@ void main()
 	cout << vec.back() << endl;
 	cout << vec.data() << endl;
 	cout << delimiter << endl;
+	//int index;
+	//int value;
+	//cout << "Введите индекс доб. элемента: "; cin >> index;
+	//cout << "Введите значение доб. элемента: "; cin >> value;
+	//vec.insert(vec.begin() + index, value);
+	//for (int i : vec) cout << i << tab;
+	//cout << endl;
 	int index;
-	int value;
-	cout << "Введите индекс доб. элемента: "; cin >> index;
-	cout << "Введите значение доб. элемента: "; cin >> value;
-	vec.insert(vec.begin() + index, value);
+	cout << "Введите индекс удаляемого элемента: "; cin >> index;
+	vec.erase(vec.begin() + index);
 	for (int i : vec) cout << i << tab;
 	cout << endl;
 #endif // STL_VECTOR
 
+#ifdef STL_LIST
+	std::list<int> list1 = { 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 };
+	/*for (const int& i : list) cout << i << tab;
+	cout << endl;*/
+	for (int i : list1) cout << i << tab;
+	cout << endl;
+	cout << delimiter << endl;
+
+	for (std::list<int>::const_iterator it = list1.cbegin(); it != list1.cend(); ++it)
+		cout << *it << tab;
+	cout << endl;
+	cout << delimiter << endl;
+
+	for (std::list<int>::const_reverse_iterator it = list1.crbegin(); it != list1.crend(); ++it)
+		cout << *it << tab;
+	cout << endl;
+	cout << delimiter << endl;
+
+	list_print(list1);
+	cout << endl;
+	cout << delimiter << endl;
+
+	cout << list1.size();
+	cout << endl;
+	int index;
+	int value;
+	cout << "Введите индекс доб. элемента: "; cin >> index;
+	cout << "Введите значение доб. элемента: "; cin >> value;
+
+	/*std::list<int>::iterator it_list = list1.begin();
+	std::advance(it_list, index);
+	list1.insert(it_list, value);
+	cout << list1.size();
+	cout << endl;
+	list_print(list1);
+	cout << endl;
+	cout << delimiter << endl;*/
+
+	try
+	{
+		insert(value, index, list1);
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << "\n" << e.what() << "\n" << endl;
+	}
+	cout << list1.size();
+	cout << endl;
+	list_print(list1);
+	cout << endl;
+	cout << delimiter << endl;
+
+	int index;
+	cout << "Введите индекс удаляемого элемента: "; cin >> index;
+	
+	/*std::list<int>::iterator it_list = list1.begin();
+	std::advance(it_list, index);
+	list1.erase(it_list);
+	cout << list1.size();
+	cout << endl;
+	list_print(list1);
+	cout << endl;
+	cout << delimiter << endl;*/
+
+	try
+	{
+		erase(index, list1);
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << "\n" << e.what() << "\n" << endl;
+	}
+	cout << list1.size();
+	cout << endl;
+	list_print(list1);
+	cout << endl;
+	cout << delimiter << endl;
+
+#endif // STL_LIST
+
+#ifdef STL_LIST_CLASS
+
+	TList<int> list1 = { 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 };
+	list1.list_print();
+#endif // STL_LIST_CLASS
+
+
+}
+
+template<typename T> void insert(T& value, int index, std::list<T>& list)
+{
+	if (index > list.size() - 1 || index < 0)
+	{
+		throw std::out_of_range("THE VALUE IS OUT OF RANGE");
+	}
+	if(list.empty()) 
+	{
+		list.push_front(value);
+		return;
+	}
+	if (index <= list.size()/2)
+	{
+		typename std::list<T>::iterator it_list = list.begin();
+		list.insert(it_list, value);
+	}
+	else
+	{
+		/*typename std::list<T>::reverse_iterator it_rlist = list.rbegin();
+		typename std::list<T>::iterator it_list = it_rlist.base();
+		std::advance(it_list, int(index - list.size()));
+		list.insert(it_list, value);*/
+		typename std::list<T>::iterator it_list = list.end();
+		std::advance(it_list, int(index - list.size()));
+		list.insert(it_list, value);
+	}
+}
+
+template<typename T> void erase(int index, std::list<T>& list)
+{
+	if (index > list.size() - 1 || index < 0)
+	{
+		throw std::out_of_range("THE VALUE IS OUT OF RANGE");
+	}
+	if (list.empty()) return;
+	if (index <= list.size() / 2)
+	{
+		typename std::list<T>::iterator it_list = list.begin();
+		list.erase(it_list);
+	}
+	else
+	{
+		/*typename std::list<T>::reverse_iterator it_rlist = list.rbegin();
+		typename std::list<T>::iterator it_list = it_rlist.base();
+		std::advance(it_list, int(index - list.size()));
+		list.erase(it_list);*/
+		typename std::list<T>::iterator it_list = list.end();
+		std::advance(it_list, int(index - list.size()));
+		list.erase(it_list);
+	}
+}
+
+template<typename T> void list_print(const std::list<T>& list)
+{
+	for (typename std::list<T>::const_iterator it = list.cbegin(); it != list.cend(); ++it)
+		cout << *it << tab;
+	cout << endl;
 }
 
 template<typename T> void vector_info(const std::vector<T>& vec)
