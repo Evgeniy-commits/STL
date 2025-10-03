@@ -3,7 +3,10 @@
 #include <iostream> 
 #include <array>
 #include <vector>
+#include <deque>
 #include <list>
+#include <forward_list>
+#include <iterator>
 using std::cin;
 using std::cout;
 using std::endl;
@@ -12,29 +15,18 @@ using std::endl;
 #define delimiter		"\n-------------------------------------------------------\n"
 
 template<typename T> void vector_info(const std::vector<T>& vec);
+template<typename T> void deque_info(const std::deque<T>& vec);
 template<typename T> void list_print(const std::list<T>& list);
 template<typename T> void insert(T& value, int index, std::list<T>& list);
 template<typename T> void erase(int index, std::list<T>& list);
 
-template<typename T> class TList : public std::list<T>
-{
-	void list_print(const std::list<T>& list)
-	{
-		for(typename std::list<T>::const_iterator it = list.cbegin(); it != list.cend(); ++it)
-			cout << *it << tab;
-		cout << endl;
-	}
-public:
-	void list_print()
-	{
-		list_print(const std::list<T>&list);
-	}
-};
 
 //#define STL_ARRAY
-//#define STL_VECTOR
+#define STL_VECTOR
+#define STL_DEQUE
 //#define STL_LIST
-#define STL_LIST_CLASS
+//#define STL_LIST_CLASSWORK
+//#define STL_FORWARD_LIST_CLASSWORK
 
 unsigned long long Factorial(int number)
 {
@@ -146,6 +138,18 @@ void main()
 	cout << endl;
 #endif // STL_VECTOR
 
+#ifdef STL_DEQUE
+	std::deque<int> deque = { 3, 5, 8, 13, 21 };
+	deque.push_back(34);
+	deque.push_front(2);
+	std::vector<int> vec;
+	cout << typeid(vec.data()).name() << endl;
+	deque_info(deque);
+	deque.assign(vec.begin() + 3, vec.begin() - 3)
+
+#endif // STL_DEQUE
+
+
 #ifdef STL_LIST
 	std::list<int> list1 = { 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 };
 	/*for (const int& i : list) cout << i << tab;
@@ -198,8 +202,8 @@ void main()
 	cout << endl;
 	cout << delimiter << endl;
 
-	int index;
-	cout << "Введите индекс удаляемого элемента: "; cin >> index;
+	/*int index;
+	cout << "Введите индекс удаляемого элемента: "; cin >> index;*/
 	
 	/*std::list<int>::iterator it_list = list1.begin();
 	std::advance(it_list, index);
@@ -226,14 +230,81 @@ void main()
 
 #endif // STL_LIST
 
-#ifdef STL_LIST_CLASS
+#ifdef STL_LIST_CLASSWORK
+	std::list<int> list = { 3, 5, 8, 13, 21, 34, 55, 89 };
+	list.push_front(2);
+	list.push_front(1);
+	list.push_front(1);
+	list.push_front(0);
+	for (std::list<int>::iterator it = list.begin(); it != list.end(); ++it)
+		cout << *it << tab;
+	cout << endl;
+	cout << delimiter << endl;
 
-	TList<int> list1 = { 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 };
-	list1.list_print();
-#endif // STL_LIST_CLASS
+	for (std::list<int>::reverse_iterator it = list.rbegin(); it != list.rend(); ++it)
+		cout << *it << tab;
+	cout << endl;
+	cout << delimiter << endl;
+
+	list_print(list);
+	cout << endl;
+	cout << delimiter << endl;
+
+	cout << list.size();
+	cout << endl;
+	int index;
+	int value;
+	cout << "Введите индекс доб. элемента: "; cin >> index;
+	cout << "Введите значение доб. элемента: "; cin >> value;
+
+	std::list<int>::iterator it_list = list.begin();
+	//for (int i = 0; i < index; i++) it_list++;
+	std::advance(it_list, index);
+	list.insert(it_list, value);
+	cout << list.size();
+	cout << endl;
+
+	list_print(list);
+	cout << endl;
+	cout << delimiter << endl;
+
+#endif // STL_LIST_CLASSWORK
+
+#ifdef STL_FORWARD_LIST_CLASSWORK
+	std::forward_list <int> list = { 3, 5, 8, 13, 21 };
+	list.push_front(2);
+	list.push_front(1);
+	list.push_front(1);
+	list.push_front(0);
+	for (std::forward_list<int>::iterator it = list.begin(); it != list.end(); ++it)
+		cout << *it << tab;
+	cout << endl;
+	cout << delimiter << endl;
+
+	int index;
+	int value;
+	cout << "Введите индекс доб. элемента: "; cin >> index;
+	cout << "Введите значение доб. элемента: "; cin >> value;
+
+	std::forward_list<int>::iterator it_list = list.before_begin();
+	//for (int i = 0; i < index; i++) it_list++;
+	std::advance(it_list, index);
+	list.insert_after(it_list, value);
+	cout << endl;
+	for (int i : list) cout << i << tab;
+	cout << endl;
+	cout << delimiter << endl;
+#endif // STL_FORWARD_LIST_CLASSWORK
 
 
 }
+
+
+
+
+
+
+
 
 template<typename T> void insert(T& value, int index, std::list<T>& list)
 {
@@ -299,5 +370,12 @@ template<typename T> void vector_info(const std::vector<T>& vec)
 	cout << "Size:\t" << vec.size() << endl;
 	cout << "MaxSize:\t" << vec.max_size() << endl;
 	cout << "Capacity:\t" << vec.capacity() << endl;
+	cout << delimiter << endl;
+}
+template<typename T> void deque_info(const std::deque<T>& vec)
+{
+	cout << "Size:\t" << vec.size() << endl;
+	cout << "MaxSize:\t" << vec.max_size() << endl;
+	//cout << "Capacity:\t" << vec.capacity() << endl;
 	cout << delimiter << endl;
 }
