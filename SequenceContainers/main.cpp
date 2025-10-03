@@ -18,23 +18,21 @@ template<typename T> void erase(int index, std::list<T>& list);
 
 template<typename T> class TList : public std::list<T>
 {
-	void list_print(const TList<T>& list)
-	{
-		for(typename TList<T>::const_iterator it = list.cbegin(); it != list.cend(); ++it)
-			cout << *it << tab;
-		cout << endl;
-	}
 public:
 	void list_print()
 	{
-		list_print(const TList<T>&list);
+		for (const T& i : *this)
+		{
+			std::cout << i << tab;
+		}
+		std::cout << std::endl;
 	}
 };
 
 //#define STL_ARRAY
 //#define STL_VECTOR
-//#define STL_LIST
-#define STL_LIST_CLASS
+#define STL_LIST
+//#define STL_LIST_CLASS
 
 unsigned long long Factorial(int number)
 {
@@ -227,11 +225,15 @@ void main()
 #endif // STL_LIST
 
 #ifdef STL_LIST_CLASS
-
-	TList<int> list1 = { 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 };
+	int n;
+	cout << "Введите размер списка: "; cin >> n;
+	TList<int> list1;
+	for (int i = 0; i < n; i++)
+	{
+		list1.push_back(rand() % 100);
+	}
 	list1.list_print();
 #endif // STL_LIST_CLASS
-
 
 }
 
