@@ -18,16 +18,16 @@ template<typename T> void erase(int index, std::list<T>& list);
 
 template<typename T> class TList : public std::list<T>
 {
-	void list_print(const std::list<T>& list)
+	void list_print(const TList<T>& list)
 	{
-		for(typename std::list<T>::const_iterator it = list.cbegin(); it != list.cend(); ++it)
+		for(typename TList<T>::const_iterator it = list.cbegin(); it != list.cend(); ++it)
 			cout << *it << tab;
 		cout << endl;
 	}
 public:
 	void list_print()
 	{
-		list_print(const std::list<T>&list);
+		list_print(const TList<T>&list);
 	}
 };
 
