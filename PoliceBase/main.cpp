@@ -1,4 +1,4 @@
-#include <iostream>
+п»ї#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -50,8 +50,8 @@ void main()
 
 	std::map<std::string, std::list<Offense>> base =
 	{
-			{"b007nd", {Offense("AP0004", "драка с полицейским", "пр. Ленина 69"), Offense("AP0002", "проезд на красный", "ул. Энтузиастов")}},
-			{"a123nc", {Offense("AP0001", "превышение скорости", "пр. Ленина 69"), Offense("AP0003", "пересечение сплошной", "ул. Энтузиастов")}}
+			{"b007nd", {Offense("AP0004", "РґСЂР°РєР° СЃ РїРѕР»РёС†РµР№СЃРєРёРј", "РїСЂ. Р›РµРЅРёРЅР° 69"), Offense("AP0002", "РїСЂРѕРµР·Рґ РЅР° РєСЂР°СЃРЅС‹Р№", "СѓР». Р­РЅС‚СѓР·РёР°СЃС‚РѕРІ")}},
+			{"a123nc", {Offense("AP0001", "РїСЂРµРІС‹С€РµРЅРёРµ СЃРєРѕСЂРѕСЃС‚Рё", "РїСЂ. Р›РµРЅРёРЅР° 69"), Offense("AP0003", "РїРµСЂРµСЃРµС‡РµРЅРёРµ СЃРїР»РѕС€РЅРѕР№", "СѓР». Р­РЅС‚СѓР·РёР°СЃС‚РѕРІ")}}
 	};
 	print_base(base);
 	cout << endl;
@@ -82,13 +82,13 @@ void add_to_list (std::map<std::string, std::list<Offense>>& cont)
 	std::string protocol;
 	std::string offenseName;
 	std::string addressOffense;
-	cout << "Введите номер автомобиля: "; cin >> number_automobile;
-	cout << "Введите номер административного правонарушения: "; cin >> protocol;
-	cout << "Название правонарушения: ";
+	cout << "Р’РІРµРґРёС‚Рµ РЅРѕРјРµСЂ Р°РІС‚РѕРјРѕР±РёР»СЏ: "; cin >> number_automobile;
+	cout << "Р’РІРµРґРёС‚Рµ РЅРѕРјРµСЂ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РёРІРЅРѕРіРѕ РїСЂР°РІРѕРЅР°СЂСѓС€РµРЅРёСЏ: "; cin >> protocol;
+	cout << "РќР°Р·РІР°РЅРёРµ РїСЂР°РІРѕРЅР°СЂСѓС€РµРЅРёСЏ: ";
 	cin.clear();
 	cin.ignore();
 	std::getline(cin, offenseName);
-	cout << "Введите место проишествия: ";
+	cout << "Р’РІРµРґРёС‚Рµ РјРµСЃС‚Рѕ РїСЂРѕРёС€РµСЃС‚РІРёСЏ: ";
 	cin.clear();
 	cin.ignore();
 	std::getline(cin, addressOffense);
@@ -104,7 +104,7 @@ void add_to_list (std::map<std::string, std::list<Offense>>& cont)
 //		if (!(f = fopen(filename, mode)))
 //		{
 //			14
-//				Класс auto_ptr
+//				РљР»Р°СЃСЃ auto_ptr
 //				exit(0);
 //		}
 //	}
@@ -115,8 +115,8 @@ void add_to_list (std::map<std::string, std::list<Offense>>& cont)
 // }
 // void f() {
 //	 FileOpen MyFile("test.txt", "r+");
-//	 //здесь выполняем нужную работу с файлом
-//	 Для усовершенствования нашего принципа мы мож
+//	 //Р·РґРµСЃСЊ РІС‹РїРѕР»РЅСЏРµРј РЅСѓР¶РЅСѓСЋ СЂР°Р±РѕС‚Сѓ СЃ С„Р°Р№Р»РѕРј
+//	 Р”Р»СЏ СѓСЃРѕРІРµСЂС€РµРЅСЃС‚РІРѕРІР°РЅРёСЏ РЅР°С€РµРіРѕ РїСЂРёРЅС†РёРїР° РјС‹ РјРѕР¶
 
 //#include <iostream>
 //#include <stdio.h>
@@ -165,8 +165,8 @@ void add_to_list (std::map<std::string, std::list<Offense>>& cont)
 //
 //	int val;
 //	int key;
-//	cout << "\nВведите значение: "; cin >> val;
-//	cout << "\nВведите ключ: "; cin >> key;
+//	cout << "\nР’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ: "; cin >> val;
+//	cout << "\nР’РІРµРґРёС‚Рµ РєР»СЋС‡: "; cin >> key;
 //
 //	pair<int, int> element(key, val);
 //	our_map.insert(element);
@@ -174,13 +174,13 @@ void add_to_list (std::map<std::string, std::list<Offense>>& cont)
 //	cout << "\nCurrent element of map --> " << our_map.size();
 //	cout << delimiter;
 //
-//	cout << "\nВведите значение: "; cin >> val;
-//	cout << "\nВведите ключ: "; cin >> key;
+//	cout << "\nР’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ: "; cin >> val;
+//	cout << "\nР’РІРµРґРёС‚Рµ РєР»СЋС‡: "; cin >> key;
 //
 //	pair <map<int, int>::iterator, bool> err = our_map.insert(make_pair(key, val));
 //	if (err.second == false)
 //	{
-//		///отработает, если уже был элемент с данным ключом
+//		///РѕС‚СЂР°Р±РѕС‚Р°РµС‚, РµСЃР»Рё СѓР¶Рµ Р±С‹Р» СЌР»РµРјРµРЅС‚ СЃ РґР°РЅРЅС‹Рј РєР»СЋС‡РѕРј
 //		cout << "\nError!!!!\n";
 //	}
 //	cout << "\nCurrent element of map --> " << our_map.size();
@@ -189,9 +189,9 @@ void add_to_list (std::map<std::string, std::list<Offense>>& cont)
 //
 //#ifdef MULTIMAP
 //	cout << "map\n\n";
-//	//отображение
+//	//РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ
 //	map<string, int> cont;
-//	//мультиотображение
+//	//РјСѓР»СЊС‚РёРѕС‚РѕР±СЂР°Р¶РµРЅРёРµ
 //	multimap<string, int> multicont;
 //
 //	cont.insert(pair<string, int>("Ivanov", 10));
