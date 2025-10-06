@@ -2,6 +2,7 @@
 #include<fstream>
 #include <string>
 #include <map>
+#include <set>
 #include <list>
 using namespace std;
 using  std::cin;
@@ -11,7 +12,8 @@ using  std::endl;
 #define tab			 "\t"
 #define delimiter	 "\n-----------------------------------------------------\n"
 
-#define STL_MAP
+//#define STL_MAP
+#define STL_SET
 
 template<typename T> void print_map(std::map< T, std::list<T>>& cont);
 template<typename T> void print_map_range(std::map< T, std::list<T>>& cont);
@@ -62,6 +64,15 @@ void main()
 	cout << endl;
 	
 #endif // STL_MAP
+
+#ifdef STL_SET
+	std::set<int> set =	{ 1024, 512, 2048, 128, 3072, 768 };
+	for (std::set<int>::iterator it = set.begin(); it != set.end(); ++it)
+	{
+		cout << *it << tab;
+	}
+	cout << endl;
+#endif // STL_SET
 }
 
 template<typename T> void print_map(std::map< T, std::list<T>>& cont)

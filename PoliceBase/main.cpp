@@ -1,99 +1,209 @@
 ﻿#include <iostream>
+#include <fstream>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string>
 #include <list>
 #include <map>
 
-using namespace std;
+using std::cin;
+using std::cout;
+using std::endl;
 
 #define tab			 "\t"
 #define delimiter	 "\n-----------------------------------------------------\n"
 
-
-
-class Offense;
-void print_base(const std::map<std::string, std::list<Offense>>& cont);
-void add_to_list(std::map<std::string, std::list<Offense>>& cont);
-
-class Offense
+const std::map<int, std::string> VIOLATIONS =
 {
-	std::string protocol;
-	std::string offenseName;
-	std::string addressOffense;
-public:
-	std::string get_num_prot() const
-	{
-		return protocol;
-	}
-	std::string get_offense_name() const
-	{
-		return offenseName;
-	}
-	std::string get_address() const
-	{
-		return addressOffense;
-	}
-	Offense(const std::string& protocol, const std::string& offenseName, const std::string& addressOffense) : protocol(protocol), offenseName(offenseName), addressOffense(addressOffense) {}
-	~Offense() {};
-	friend std::ostream& operator<<(std::ostream& os, const Offense& obj);
+	{0, "N/A"},
+	{1, "Парковка в неположенном месте"},
+	{2, "Непристегнутый ремень безопасности"},
+	{3, "Пересечение сплошной"},
+	{4, "Превышение скорости"},
+	{5, "Проезд на красный"},
+	{6, "Выезд на встречную полосу"},
+	{7, "Езда в нетрезвом состоянии"},
+	{8, "Оскорбление офицера"},
+
 };
 
-std::ostream& operator<<(std::ostream& os, const Offense& obj)
+class Crime
 {
-	return os << obj.get_num_prot() << tab << obj.get_offense_name() << tab << obj.get_address() << endl;
+	int violation;
+	std::string place;
+public:
+	int get_violation() const
+	{
+		return violation;
+	}
+	const std::string& get_place() const
+	{
+		return place;
+	}
+	void set_violation(int violation)
+	{
+		this->violation = violation;
+	}
+	void set_place(const std::string& place)
+	{
+		this->place = place;
+	}
+	Crime(int violation, const std::string& place)
+	{
+		set_violation(violation);
+		set_place(place);
+	}
+};
+std::ostream& operator<<(std::ostream& os, const Crime& obj)
+{
+	os.width(44);
+	os << std::left;
+	return os << VIOLATIONS.at(obj.get_violation()) << tab << obj.get_place();
 }
+
+void print(const std::map< std::string, std::list<Crime>>& base);
+void save(const std::map< std::string, std::list<Crime>>& base, const std::string& filename);
 
 void main()
 {
-	setlocale(LC_ALL, "Russian");
+	setlocale(LC_ALL, "");
 
-	std::map<std::string, std::list<Offense>> base =
+	std::map<std::string, std::list<Crime>> base =
 	{
-			{"b007nd", {Offense("AP0004", "драка с полицейским", "пр. Ленина 69"), Offense("AP0002", "проезд на красный", "ул. Энтузиастов")}},
-			{"a123nc", {Offense("AP0001", "превышение скорости", "пр. Ленина 69"), Offense("AP0003", "пересечение сплошной", "ул. Энтузиастов")}}
+			{"а777аа", {Crime(4, "пр. Ленина 69"), Crime(5, "ул. Энтузиастов"), Crime(7, "ул. Ленина"), Crime(8, "ул. Энтузиастов")}},
+			{"a123nc", {Crime(2, "ул. Пролетарская"), Crime(3, "ул. Ватутина")}},
+			{"a001eg", {Crime(5, "ул. Пролетарская"), Crime(5, "ул. Октябрьская"), Crime(7, "ул. Ватутина"), Crime(8, "ул. Ватутина")}}
 	};
-	print_base(base);
-	cout << endl;
-	add_to_list(base);
-	print_base(base);
-	cout << endl;
 
+	print(base);
+	save(base, "base.txt");
 }
 
-void print_base(const std::map< std::string, std::list<Offense>>& cont)
+void print(const std::map< std::string, std::list<Crime>>& base)
 {
-	for (std::map< std::string, std::list<Offense>>::const_iterator it = cont.begin(); it != cont.end(); ++it)
+	for (std::map< std::string, std::list<Crime>>::const_iterator plate = base.begin(); plate != base.end(); ++plate)
 	{
-		cout.width(15);
-		cout << it->first << ":" << tab;
-		for (std::list<Offense>::const_iterator sec_it = it->second.begin(); sec_it != it->second.end(); ++sec_it)
+		cout << plate->first << ":\n";
+		for (std::list<Crime>::const_iterator violation = plate->second.begin(); violation != plate->second.end(); ++violation)
 		{
-			cout.width(15);
-			cout << *sec_it << tab;
+			cout << tab << *violation << endl;
 		}
-		cout << endl;
+		cout << delimiter;
 	}
 }
 
-void add_to_list (std::map<std::string, std::list<Offense>>& cont)
+void save(const std::map< std::string, std::list<Crime>>& base, const std::string& filename)
 {
-	std::string number_automobile;
-	std::string protocol;
-	std::string offenseName;
-	std::string addressOffense;
-	cout << "Введите номер автомобиля: "; cin >> number_automobile;
-	cout << "Введите номер административного правонарушения: "; cin >> protocol;
-	cout << "Название правонарушения: ";
-	cin.clear();
-	cin.ignore();
-	std::getline(cin, offenseName);
-	cout << "Введите место проишествия: ";
-	cin.clear();
-	cin.ignore();
-	std::getline(cin, addressOffense);
-	cont[number_automobile].push_back(Offense(protocol, offenseName, addressOffense));
+	std::ofstream fout(filename);
+	for (std::map< std::string, std::list<Crime>>::const_iterator plate = base.begin(); plate != base.end(); ++plate)
+	{
+		fout << plate->first << ":\n";
+		for (std::list<Crime>::const_iterator violation = plate->second.begin(); violation != plate->second.end(); ++violation)
+		{
+			fout << tab << *violation << endl;
+		}
+		fout << delimiter;
+	}
+	fout.close();
+	std::string cmd = "notepad ";
+	cmd += filename;
+	system(cmd.c_str());
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//class Offense;
+//void print_base(const std::map<std::string, std::list<Offense>>& cont);
+//void add_to_list(std::map<std::string, std::list<Offense>>& cont);
+//
+//class Offense
+//{
+//	std::string protocol;
+//	std::string offenseName;
+//	std::string addressOffense;
+//public:
+//	std::string get_num_prot() const
+//	{
+//		return protocol;
+//	}
+//	std::string get_offense_name() const
+//	{
+//		return offenseName;
+//	}
+//	std::string get_address() const
+//	{
+//		return addressOffense;
+//	}
+//	Offense(const std::string& protocol, const std::string& offenseName, const std::string& addressOffense) : protocol(protocol), offenseName(offenseName), addressOffense(addressOffense) {}
+//	~Offense() {};
+//	friend std::ostream& operator<<(std::ostream& os, const Offense& obj);
+//};
+//
+//std::ostream& operator<<(std::ostream& os, const Offense& obj)
+//{
+//	return os << obj.get_num_prot() << tab << obj.get_offense_name() << tab << obj.get_address() << endl;
+//}
+//
+//void main()
+//{
+//	setlocale(LC_ALL, "Russian");
+//
+//	std::map<std::string, std::list<Offense>> base =
+//	{
+//			{"b007nd", {Offense("AP0004", "драка с полицейским", "пр. Ленина 69"), Offense("AP0002", "проезд на красный", "ул. Энтузиастов")}},
+//			{"a123nc", {Offense("AP0001", "превышение скорости", "пр. Ленина 69"), Offense("AP0003", "пересечение сплошной", "ул. Энтузиастов")}}
+//	};
+//	print_base(base);
+//	cout << endl;
+//	add_to_list(base);
+//	print_base(base);
+//	cout << endl;
+//
+//}
+//
+//void print_base(const std::map< std::string, std::list<Offense>>& cont)
+//{
+//	for (std::map< std::string, std::list<Offense>>::const_iterator it = cont.begin(); it != cont.end(); ++it)
+//	{
+//		cout.width(15);
+//		cout << it->first << ":" << tab;
+//		for (std::list<Offense>::const_iterator sec_it = it->second.begin(); sec_it != it->second.end(); ++sec_it)
+//		{
+//			cout.width(15);
+//			cout << *sec_it << tab;
+//		}
+//		cout << endl;
+//	}
+//}
+//
+//void add_to_list (std::map<std::string, std::list<Offense>>& cont)
+//{
+//	std::string number_automobile;
+//	std::string protocol;
+//	std::string offenseName;
+//	std::string addressOffense;
+//	cout << "Введите номер автомобиля: "; cin >> number_automobile;
+//	cout << "Введите номер административного правонарушения: "; cin >> protocol;
+//	cout << "Название правонарушения: ";
+//	cin.clear();
+//	cin.ignore();
+//	std::getline(cin, offenseName);
+//	cout << "Введите место проишествия: ";
+//	cin.clear();
+//	cin.ignore();
+//	std::getline(cin, addressOffense);
+//	cont[number_automobile].push_back(Offense(protocol, offenseName, addressOffense));
+//}
 
 //class FileOpen
 //{
@@ -103,9 +213,7 @@ void add_to_list (std::map<std::string, std::list<Offense>>& cont)
 //	{
 //		if (!(f = fopen(filename, mode)))
 //		{
-//			14
-//				Класс auto_ptr
-//				exit(0);
+//			exit(0);
 //		}
 //	}
 //	~FileOpen() {
