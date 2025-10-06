@@ -19,16 +19,17 @@ class Offense
 	std::string protocol;
 	std::string addressOffense;
 public:
-	const std::string& get_num_prot() const
+	std::string get_num_prot() const
 	{
 		return protocol;
 	}
-	const std::string& get_address() const
+	std::string get_address() const
 	{
 		return addressOffense;
 	}
 	Offense(const std::string& protocol, const std::string& addressOffense) : protocol(protocol), addressOffense(addressOffense) {}
 	~Offense() {};
+	friend std::ostream& operator<<(std::ostream& os, const Offense& obj);
 };
 
 static const std::map<std::string, std::string> OffenseList =
