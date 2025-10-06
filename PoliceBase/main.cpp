@@ -17,32 +17,29 @@ void add_to_list(std::map<std::string, std::list<Offense>>& cont);
 class Offense
 {
 	std::string protocol;
+	std::string offenseName;
 	std::string addressOffense;
 public:
 	std::string get_num_prot() const
 	{
 		return protocol;
 	}
+	std::string get_offense_name() const
+	{
+		return offenseName;
+	}
 	std::string get_address() const
 	{
 		return addressOffense;
 	}
-	Offense(const std::string& protocol, const std::string& addressOffense) : protocol(protocol), addressOffense(addressOffense) {}
+	Offense(const std::string& protocol, const std::string& offenseName, const std::string& addressOffense) : protocol(protocol), offenseName(offenseName), addressOffense(addressOffense) {}
 	~Offense() {};
 	friend std::ostream& operator<<(std::ostream& os, const Offense& obj);
 };
 
-static const std::map<std::string, std::string> OffenseList =
-{
-	{"AP0001", "превышение скорости"},
-	{"AP0002", "проезд на красный"},
-	{"AP0003", "пересечение сплошной"},
-	{"AP0004", "драка с полицейским"},
-};
-
 std::ostream& operator<<(std::ostream& os, const Offense& obj)
 {
-	return os << obj.get_num_prot() << tab << OffenseList.at(obj.get_num_prot()) << tab << obj.get_address() << endl;
+	return os << obj.get_num_prot() << tab << obj.get_offense_name() << tab << obj.get_address() << endl;
 }
 
 void main()
@@ -51,13 +48,13 @@ void main()
 
 	std::map<std::string, std::list<Offense>> base =
 	{
-			{"b007nd", {Offense("AP0004", "пр. Ћенина 69")}},
-			{"a123nc", {Offense("AP0001", "пр. Ћенина 69"), Offense("AP0003", "ул. Ёнтузиастов"), Offense("AP0002", "ул. Ёнтузиастов")}}
+			{"b007nd", {Offense("AP0004", "драка с полицейским", "пр. Ћенина 69"), Offense("AP0002", "проезд на красный", "ул. Ёнтузиастов")}},
+			{"a123nc", {Offense("AP0001", "превышение скорости", "пр. Ћенина 69"), Offense("AP0003", "пересечение сплошной", "ул. Ёнтузиастов")}}
 	};
 	print_base(base);
 	cout << endl;
-	//add_to_list(base);
-	//print_base(base);
+	add_to_list(base);
+	print_base(base);
 	cout << endl;
 
 }
@@ -81,12 +78,17 @@ void add_to_list (std::map<std::string, std::list<Offense>>& cont)
 {
 	std::string number_automobile;
 	std::string protocol;
+	std::string offenseName;
 	std::string addressOffense;
 	cout << "¬ведите номер автомобил€: "; cin >> number_automobile;
-	cout << "¬ведите правонарушение (номер статьи): "; cin >> protocol;
+	cout << "¬ведите номер административного правонарушени€: "; cin >> protocol;
+	cout << "Ќазвание правонарушени€: ";
+	cin.clear();
+	cin.ignore();
+	std::getline(cin, offenseName);
 	cout << "¬ведите место проишестви€: ";
 	cin.clear();
 	cin.ignore();
 	std::getline(cin, addressOffense);
-	cont[number_automobile].push_back(Offense(protocol, addressOffense));
+	cont[number_automobile].push_back(Offense(protocol, offenseName, addressOffense));
 }
