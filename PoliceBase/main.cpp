@@ -1,4 +1,5 @@
-﻿#include <iostream>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
 #include <fstream>
 #include <stdio.h>
 #include <string>
@@ -8,6 +9,7 @@
 using std::cin;
 using std::cout;
 using std::endl;
+
 
 #define tab			 "\t"
 #define delimiter	 "\n-----------------------------------------------------\n"
@@ -23,7 +25,19 @@ const std::map<int, std::string> VIOLATIONS =
 	{6, "Выезд на встречную полосу"},
 	{7, "Езда в нетрезвом состоянии"},
 	{8, "Оскорбление офицера"},
+};
 
+std::map<std::string, int> VIOLATIONS_BACK =
+{
+	{"N/A", 0},
+	{"Парковка в неположенном месте", 1},
+	{"Непристегнутый ремень безопасности", 2},
+	{"Пересечение сплошной", 3},
+	{"Превышение скорости", 4},
+	{"Проезд на красный", 5},
+	{"Выезд на встречную полосу", 6},
+	{"Езда в нетрезвом состоянии", 7},
+	{"Оскорбление офицера", 8},
 };
 
 class Crime
@@ -55,13 +69,15 @@ public:
 };
 std::ostream& operator<<(std::ostream& os, const Crime& obj)
 {
-	os.width(44);
-	os << std::left;
-	return os << VIOLATIONS.at(obj.get_violation()) << tab << obj.get_place();
+	/*os.width(40);
+	os << std::left;*/
+	return os <<VIOLATIONS.at(obj.get_violation()) << tab << obj.get_place();
 }
+
 
 void print(const std::map< std::string, std::list<Crime>>& base);
 void save(const std::map< std::string, std::list<Crime>>& base, const std::string& filename);
+void load(std::map< std::string, std::list<Crime>>& base, const std::string& filename);
 
 void main()
 {
@@ -74,8 +90,11 @@ void main()
 			{"a001eg", {Crime(5, "ул. Пролетарская"), Crime(5, "ул. Октябрьская"), Crime(7, "ул. Ватутина"), Crime(8, "ул. Ватутина")}}
 	};
 
-	print(base);
+	//print(base);
 	save(base, "base.txt");
+	load(base, "base.txt");
+	save(base, "testbase.txt");
+	print(base);
 }
 
 void print(const std::map< std::string, std::list<Crime>>& base)
@@ -109,9 +128,121 @@ void save(const std::map< std::string, std::list<Crime>>& base, const std::strin
 	system(cmd.c_str());
 }
 
+void load(std::map< std::string, std::list<Crime>>& base, const std::string& filename)
+{
+	std::ifstream fin(filename);
+	if (fin.is_open())
+	{
+		base.clear();
+		std::string plate;
+		std::string place;
+		int violation;
+		std::string crimes_full;
+		while (!fin.eof())
+		{
+			std::getline(fin, plate, '\n');
+
+			std::getline(fin, crimes_full);
+			if (crimes_full.empty()) continue;
+			int buffer_size = crimes_full.size() + 1;
+			char* buffer = new char[buffer_size] {};
+				std::strcpy(buffer, crimes_full.c_str());
+				char delimiters[] = "\t";
+				for (char* pch = strtok(buffer, delimiters); pch; pch = strtok(NULL, delimiters))
+				{
+					while (pch == "\t") pch++;
+					std::map<std::string, int>::iterator it = VIOLATIONS_BACK.find(pch);
+					violation = it->second;
+					pch = std::strchr(pch, ' ') + 1;
+					if (*pch == '\n') break;
+					base[plate].push_back(Crime(violation, pch));
+				}
+				delete[] buffer;
+		}
+		fin.close();
+	}
+	else
+	{
+		std::cerr << "Error: file not found" << endl;
+	}
+}
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//void Clear(Human* group[], const int n)
+//{
+//	for (int i(0); i < n; i++)
+//	{
+//		delete group[i];
+//		cout << delimiter << endl;
+//	}
+//}
+//Human* HumanFactory(const std::string& type)
+//{
+//	Human* human = nullptr;
+//	if (strstr(type.c_str(), "Human")) human = new Human("", "", 0);
+//	else if (strstr(type.c_str(), "Student")) human = new Student("", "", 0, "", "", 0, 0);
+//	else if (strstr(type.c_str(), "Graduate")) human = new Graduate("", "", 0, "", "", 0, 0, "", 0, 0, 0);
+//	else if (strstr(type.c_str(), "Teacher")) human = new Teacher("", "", 0, "", 0);
+//	return human;
+//}
+//
+//Human** Load(const std::string& filename, int& n)
+//{
+//	Human** group = nullptr;
+//	std::ifstream fin(filename);
+//	if (fin.is_open())
+//	{
+//		n = 0;
+//		std::string buffer;
+//		while (!fin.eof())
+//		{
+//			std::getline(fin, buffer);
+//			if (buffer.size() < 20) continue;
+//			n++;
+//		}
+//		cout << "Количество объектов: " << n << endl;
+//		group = new Human * [n];
+//		cout << "Position " << fin.tellg() << endl;
+//		fin.clear();
+//		fin.seekg(0);
+//
+//		for (int i = 0; i < n; i++)
+//		{
+//			std::string buffer;
+//			std::getline(fin, buffer, ':');
+//			if (buffer.size() < 5) continue;
+//			group[i] = HumanFactory(buffer);
+//			fin >> *group[i];
+//		}
+//	}
+//
+//	else
+//	{
+//		std::cerr << "Error: file not found" << endl;
+//	}
+//	return group;
+//}
 
 
 
