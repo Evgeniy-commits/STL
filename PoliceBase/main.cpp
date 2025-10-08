@@ -1,5 +1,4 @@
-﻿//#define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <stdio.h>
 #include <string>
@@ -14,6 +13,8 @@ using std::endl;
 
 #define tab			 "\t"
 #define delimiter	 "\n-----------------------------------------------------\n"
+
+
 
 const std::map<int, std::string> VIOLATIONS =
 {
@@ -41,6 +42,9 @@ std::map<std::string, int> VIOLATIONS_BACK =
 	{"Оскорбление офицера", 8},
 };
 
+class Crime;
+std::stringstream& operator>>(std::stringstream& ifs, Crime& obj);
+
 class Crime
 {
 	int violation;
@@ -67,11 +71,16 @@ public:
 		set_violation(violation);
 		set_place(place);
 	}
+	explicit Crime(const std::string& str)
+	{
+		std::stringstream stream(str);
+		stream >> *this;
+	}
 };
 std::ostream& operator<<(std::ostream& os, const Crime& obj)
 {
-	/*os.width(40);
-	os << std::left;*/
+	os.width(40);
+	os << std::left;
 	return os <<VIOLATIONS.at(obj.get_violation()) << tab << obj.get_place();
 }
 std::ofstream& operator<<(std::ofstream& ofs, const Crime& obj)
@@ -161,20 +170,20 @@ std::map< std::string, std::list<Crime>> load(const std::string& filename)
 			std::string licence_plate;
 			std::getline(fin, licence_plate, ':');
 			cout << licence_plate << "\t";
-			const int SIZE = 1024 * 100;
+			const int SIZE = 1024 * 5;
 			char all_crimes[SIZE]{};
 			fin.getline(all_crimes, SIZE);
 			cout << all_crimes << endl;
 
 			const char delimiters[] = ",";
 			for (char* pch = strtok(all_crimes, delimiters); pch; pch = strtok(NULL, delimiters))
-			{
-				Crime crime(0, "");
-				std::stringstream stream(pch);
-				stream >> crime;
-				base[licence_plate].push_back(crime);
-			}
-
+				base[licence_plate].push_back(Crime(pch));
+			//{
+			//	/*Crime crime(0, "");
+			//	std::stringstream stream(pch);
+			//	stream >> crime;
+			//	base[licence_plate].push_back(crime);*/
+			//}
 		}
 	}
 	else
@@ -184,6 +193,11 @@ std::map< std::string, std::list<Crime>> load(const std::string& filename)
 	fin.close();
 	return base;
 }
+
+
+
+
+
 
 //void load(std::map< std::string, std::list<Crime>>& base, const std::string& filename)
 //{
