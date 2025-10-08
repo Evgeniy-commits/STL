@@ -1,10 +1,11 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+﻿//#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
 #include <string>
 #include <list>
 #include <map>
+#include <sstream>
 
 using std::cin;
 using std::cout;
@@ -73,15 +74,33 @@ std::ostream& operator<<(std::ostream& os, const Crime& obj)
 	os << std::left;*/
 	return os <<VIOLATIONS.at(obj.get_violation()) << tab << obj.get_place();
 }
-
+std::ofstream& operator<<(std::ofstream& ofs, const Crime& obj)
+{
+	ofs << obj.get_violation() << " " << obj.get_place();
+	return ofs;
+}
+std::stringstream& operator>>(std::stringstream& ifs, Crime& obj)
+{
+	int violation;
+	ifs >> violation;
+	std::string place;
+	std::getline(ifs, place);
+	obj.set_violation(violation);
+	obj.set_place(place);
+	return ifs;
+}
 
 void print(const std::map< std::string, std::list<Crime>>& base);
 void save(const std::map< std::string, std::list<Crime>>& base, const std::string& filename);
-void load(std::map< std::string, std::list<Crime>>& base, const std::string& filename);
+//void load(std::map< std::string, std::list<Crime>>& base, const std::string& filename);
+std::map< std::string, std::list<Crime>> load(const std::string& filename);
+
+//#define INIT_BASE
 
 void main()
 {
 	setlocale(LC_ALL, "");
+#ifdef INIT_BASE
 
 	std::map<std::string, std::list<Crime>> base =
 	{
@@ -92,8 +111,12 @@ void main()
 
 	//print(base);
 	save(base, "base.txt");
-	load(base, "base.txt");
-	save(base, "testbase.txt");
+	//load(base, "base.txt");
+	//save(base, "testbase.txt");
+	print(base);
+#endif // INIT_BASE
+
+	std::map<std::string, std::list<Crime>> base = load("base.txt");
 	print(base);
 }
 
@@ -106,7 +129,6 @@ void print(const std::map< std::string, std::list<Crime>>& base)
 		{
 			cout << tab << *violation << endl;
 		}
-		cout << delimiter;
 	}
 }
 
@@ -115,12 +137,12 @@ void save(const std::map< std::string, std::list<Crime>>& base, const std::strin
 	std::ofstream fout(filename);
 	for (std::map< std::string, std::list<Crime>>::const_iterator plate = base.begin(); plate != base.end(); ++plate)
 	{
-		fout << plate->first << ":\n";
+		fout << plate->first << ":";
 		for (std::list<Crime>::const_iterator violation = plate->second.begin(); violation != plate->second.end(); ++violation)
 		{
-			fout << tab << *violation << endl;
+			fout << *violation << ",";
 		}
-		fout << delimiter;
+		fout << endl;
 	}
 	fout.close();
 	std::string cmd = "notepad ";
@@ -128,44 +150,79 @@ void save(const std::map< std::string, std::list<Crime>>& base, const std::strin
 	system(cmd.c_str());
 }
 
-void load(std::map< std::string, std::list<Crime>>& base, const std::string& filename)
+std::map< std::string, std::list<Crime>> load(const std::string& filename)
 {
+	std::map< std::string, std::list<Crime>> base;
 	std::ifstream fin(filename);
 	if (fin.is_open())
 	{
-		base.clear();
-		std::string plate;
-		std::string place;
-		int violation;
-		std::string crimes_full;
 		while (!fin.eof())
 		{
-			std::getline(fin, plate, '\n');
+			std::string licence_plate;
+			std::getline(fin, licence_plate, ':');
+			cout << licence_plate << "\t";
+			const int SIZE = 1024 * 100;
+			char all_crimes[SIZE]{};
+			fin.getline(all_crimes, SIZE);
+			cout << all_crimes << endl;
 
-			std::getline(fin, crimes_full);
-			if (crimes_full.empty()) continue;
-			int buffer_size = crimes_full.size() + 1;
-			char* buffer = new char[buffer_size] {};
-				std::strcpy(buffer, crimes_full.c_str());
-				char delimiters[] = "\t";
-				for (char* pch = strtok(buffer, delimiters); pch; pch = strtok(NULL, delimiters))
-				{
-					while (pch == "\t") pch++;
-					std::map<std::string, int>::iterator it = VIOLATIONS_BACK.find(pch);
-					violation = it->second;
-					pch = std::strchr(pch, ' ') + 1;
-					if (*pch == '\n') break;
-					base[plate].push_back(Crime(violation, pch));
-				}
-				delete[] buffer;
+			const char delimiters[] = ",";
+			for (char* pch = strtok(all_crimes, delimiters); pch; pch = strtok(NULL, delimiters))
+			{
+				Crime crime(0, "");
+				std::stringstream stream(pch);
+				stream >> crime;
+				base[licence_plate].push_back(crime);
+			}
+
 		}
-		fin.close();
 	}
 	else
 	{
-		std::cerr << "Error: file not found" << endl;
+		std::cerr << "Error: File not found" << endl;
 	}
+	fin.close();
+	return base;
 }
+
+//void load(std::map< std::string, std::list<Crime>>& base, const std::string& filename)
+//{
+//	std::ifstream fin(filename);
+//	if (fin.is_open())
+//	{
+//		base.clear();
+//		std::string plate;
+//		std::string place;
+//		int violation;
+//		std::string crimes_full;
+//		while (!fin.eof())
+//		{
+//			std::getline(fin, plate, '\n');
+//
+//			std::getline(fin, crimes_full);
+//			if (crimes_full.empty()) continue;
+//			int buffer_size = crimes_full.size() + 1;
+//			char* buffer = new char[buffer_size] {};
+//			std::strcpy(buffer, crimes_full.c_str());
+//			char delimiters[] = "\t";
+//			for (char* pch = strtok(buffer, delimiters); pch; pch = strtok(NULL, delimiters))
+//			{
+//				while (pch == "\t") pch++;
+//				std::map<std::string, int>::iterator it = VIOLATIONS_BACK.find(pch);
+//				violation = it->second;
+//				pch = std::strchr(pch, ' ') + 1;
+//				if (pch == "\n") break;
+//				base[plate].push_back(Crime(violation, pch));
+//			}
+//			delete[] buffer;
+//		}
+//		fin.close();
+//	}
+//	else
+//	{
+//		std::cerr << "Error: file not found" << endl;
+//	}
+//}
 
 
 
